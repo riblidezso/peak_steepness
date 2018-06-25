@@ -7,10 +7,15 @@ class PeakCount():
     
     def __init__(self, peak_counting_method = 'original',
                  resolution_arcmin = 1., 
-                 bins = np.arange(-0.03,0.19,0.01)):
+                 bins = np.arange(-0.03,0.19,0.01),
+                 covariance ='varying',
+                 fiducial_values = (0.26,0.8)):
         self.peak_counting_method = peak_counting_method
         self.resolution_arcmin = resolution_arcmin
         self.bins = bins
+        self.covariance = covariance
+        self.fiducial_values = fiducial_values
+        assert self.covariance in ['fixed','varying']
         assert self.peak_counting_method in ['original',
                                              'laplace_v1',
                                              'laplace_v2',
@@ -34,8 +39,12 @@ class PeakCount():
             
         self.inv_cov = {}
         for k,v in self.peak_list.iteritems():
-            vm = np.vstack(v).T
-            self.inv_cov[k] = np.linalg.pinv(np.cov(vm))
+            if self.covariance == 'varying':
+                vm = np.vstack(v).T
+                self.inv_cov[k] = np.linalg.pinv(np.cov(vm))
+            elif self.covariance == 'fixed':
+                vm = np.vstack(self.peak_list[self.fiducial_values]).T
+                self.inv_cov[k] = np.linalg.pinv(np.cov(vm))
             
 
     def find_peaks(self, im):
