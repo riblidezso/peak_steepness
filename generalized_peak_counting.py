@@ -94,7 +94,7 @@ class PeakCount():
         if self.peak_counting_method == 'original':
             return self.peak_count_original(im) 
         elif self.peak_counting_method == 'laplace_v1':
-            return self.peak_count_laplace__v1(im)
+            return self.peak_count_laplace_v1(im)
         elif self.peak_counting_method == 'laplace_v2':
             return self.peak_count_laplace_v2(im)
         elif self.peak_counting_method == 'roberts_cross':
@@ -113,7 +113,7 @@ class PeakCount():
     def peak_count_laplace_v1(self,im):
         """Peak steepness counting with laplace kernel"""
         peaks = self.find_peaks(im)
-        vals = self.mexican_hat(im)[peaks]
+        vals = self.laplace_v1(im)[peaks]
         hp = np.histogram(vals, bins=self.bins)[0]
         return hp
     
@@ -136,7 +136,7 @@ class PeakCount():
     def peak_count_laplace_v2(self,im):
         """Peak steepness counting with laplace kernel"""
         peaks = self.find_peaks(im)
-        vals = self.mexican_hat_v1(im)[peaks]
+        vals = self.laplace_v1(im)[peaks]
         hp = np.histogram(vals, bins=self.bins)[0]
         return hp
     
